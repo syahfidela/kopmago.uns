@@ -1,13 +1,14 @@
 // DATA PRODUK DEFAULT KOPMA
 const defaultProducts = [
     { id: '1', name: "Buku Tulis Sidu (5 Pcs)", category: "Alat Tulis", price: 18000, stock: 50, image: "https://sidu.id/documents/287278/309575/SiDU+Small+Opened+Reg.png/0733411c-2c83-d77b-10a8-959617cff9aa?t=1708678659796" },
-    { id: '2', name: "Pulpen Gel Standard", category: "Alat Tulis", price: 3500, stock: 100, image: "https://placehold.co/200x200/eef8ff/0066cc?text=Pulpen" },
-    { id: '3', name: "Roti Bakar Kopma", category: "Snack & Minuman", price: 12000, stock: 20, image: "https://placehold.co/200x200/fffbeb/d97706?text=Roti" },
-    { id: '4', name: "Kopi Susu Literan", category: "Snack & Minuman", price: 35000, stock: 10, image: "https://placehold.co/200x200/fffbeb/d97706?text=Kopsus" },
-    { id: '5', name: "Lanyard Kampus", category: "Merchandise", price: 20000, stock: 30, image: "https://placehold.co/200x200/f3e8ff/7c3aed?text=Lanyard" },
-    { id: '6', name: "Sewa Proyektor (Hari)", category: "Kopma Rent", price: 50000, stock: 5, image: "https://placehold.co/200x200/eff6ff/1d4ed8?text=Proyektor" },
-    { id: '7', name: "Beras Premium 5kg", category: "Sembako & Kebutuhan Lainnya", price: 65000, stock: 15, image: "https://placehold.co/200x200/ecfdf5/059669?text=Beras" },
+    { id: '2', name: "Pulpen Standard AE7", category: "Alat Tulis", price: 3000, stock: 100, image: "https://image.gramedia.net/rs:fit:0:0/f:webp/plain/https://cdn.gramedia.com/uploads/items/DSC_0240.JPG" },
+    { id: '3', name: "Oreo Chocolate Creme", category: "Snack & Minuman", price: 2000, stock: 20, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9kBxmcGZ4jnKPC9CqknRgQSS0aVaFBZdxx_5TXP3S762DDUfhSf4IQ2E&s=10" },
+    { id: '4', name: "Ultra Milk Full Cream", category: "Snack & Minuman", price: 8000, stock: 10, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-zSKXT-q8ZYILOI1KOPIEhxLakgBVWVYqSp-qY7PHeg&s=10" },
+    { id: '5', name: "UNS T-Shirt Lengan Pendek", category: "Semar Souvenir Center", price: 90000, stock: 10, image: "https://i.ibb.co.com/fY2Ts5V6/Screenshot-20261012-083933-Shopee.jpg" },
+    { id: '6', name: "Sewa Proyektor (Hari)", category: "Kopma Rent", price: 55000, stock: 5, image: "https://mediaserver.goepson.com/adaptivemedia/rendition?id=fc76cca61bce0e890e56a30b67d1e9473724731c&vid=fc76cca61bce0e890e56a30b67d1e9473724731c&prid=515Wx515H&clid=SAPDAM&prclid=productpictures&assetDescr=W53_W_STD_03" },
+    { id: '7', name: "Shampo Zinc", category: "Sembako & Kebutuhan Lainnya", price: 65000, stock: 15, image: "https://placehold.co/200x200/ecfdf5/059669?text=Beras" },
     { id: '8', name: "Print Dokumen HVS Warna", category: "Fotocopy & Print", price: 1500, stock: 999, image: "https://placehold.co/200x200/fff1f2/e11d48?text=Print" },
+    { id: '9', name: "Ganci UNS", category: "Semar Souvenir Center", price: 10000, stock: 50, image: "https://i.ibb.co.com/tyW9sgm/Screenshot-20261012-083603-Instagram.jpg" },
 ];
 
 // Inisialisasi Database Lokal (LocalStorage)
