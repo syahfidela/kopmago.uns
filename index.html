@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kopma GO - Mart & Delivery</title>
+    
+    <!-- Memanggil file CSS Anda -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <header class="sticky top-0 z-40 bg-white shadow-sm border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+            <!-- Logo & Brand -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="navigate('home')">
+                <img src="https://kopma.uns.ac.id/wp-content/uploads/2024/06/cropped-Logo-Kopma-1.png" alt="Logo Kopma" class="h-12 w-auto object-contain shrink-0">
+                <div class="hidden sm:block shrink-0">
+                    <h1 class="font-bold text-lg text-slate-900 leading-tight">Kopma GO</h1>
+                    <p class="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Mart & Delivery</p>
+                </div>
+            </div>
+
+            <!-- Global Search -->
+            <div id="navSearch" class="hidden md:flex flex-1 max-w-md mx-6 transition-all">
+                <div class="relative w-full">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Cari produk kopma..." class="w-full pl-10 pr-4 py-2.5 bg-slate-100 border-transparent focus:bg-white focus:border-kopma-500 rounded-xl text-sm transition-all outline-none">
+                </div>
+            </div>
+
+            <!-- Actions (Auth, Cart, History) -->
+            <div class="flex items-center space-x-3">
+                <div id="userProfileBadge" class="hidden items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
+                    <i class="fa-solid fa-user-circle text-slate-500"></i>
+                    <span id="userNameDisplay" class="text-xs font-semibold text-slate-700">Guest</span>
+                </div>
+
+                <button id="btnAdminDashboard" onclick="navigate('admin')" class="hidden bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-gauge"></i> <span class="hidden sm:inline">Dashboard</span>
+                </button>
+
+                <button id="btnOrderHistory" onclick="openHistoryModal()" class="hidden bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-2 rounded-xl text-sm font-semibold flex items-center gap-2">
+                    <i class="fa-solid fa-receipt"></i> <span class="hidden sm:inline">Riwayat</span>
+                </button>
+
+                <button id="btnCart" onclick="toggleCartModal(true)" class="hidden relative bg-kopma-50 hover:bg-kopma-100 text-kopma-700 px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span id="cartBadge" class="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center scale-0 transition-transform">0</span>
+                </button>
+
+                <button id="btnLogout" onclick="logout()" class="hidden text-slate-400 hover:text-rose-500 p-2 rounded-lg transition-colors" title="Keluar">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow relative">
+        <!-- LOADING OVERLAY -->
+        <div id="loadingOverlay" class="absolute inset-0 z-30 bg-slate-50 flex flex-col items-center justify-center transition-all duration-300">
+            <i class="fa-solid fa-circle-notch fa-spin text-4xl text-kopma-500 mb-4"></i>
+            <p class="text-sm text-slate-500 font-medium">Memuat aplikasi...</p>
+        </div>
+
+        <!-- AUTH VIEW -->
+        <div id="authView" class="hidden min-h-[80vh] flex items-center justify-center p-4">
+            <div class="bg-white max-w-md w-full rounded-3xl shadow-xl border border-slate-100 p-8 text-center">
+                <img src="https://kopma.uns.ac.id/wp-content/uploads/2024/06/cropped-Logo-Kopma-1.png" alt="Logo Kopma" class="h-24 w-auto mx-auto mb-6 object-contain shrink-0">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Selamat Datang!</h2>
+                <p class="text-sm text-slate-500 mb-8">Silakan pilih peran untuk masuk ke portal Kopma.</p>
+                
+                <div class="space-y-4">
+                    <button onclick="login('buyer')" class="w-full bg-kopma-600 hover:bg-kopma-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-user-graduate text-lg"></i>
+                        Masuk sebagai Mahasiswa
+                    </button>
+                    <button onclick="login('admin')" class="w-full bg-white hover:bg-slate-50 text-slate-700 border-2 border-slate-200 font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-user-tie text-lg"></i>
+                        Masuk sebagai Admin Kopma
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BUYER CATALOG VIEW -->
+        <div id="catalogView" class="hidden max-w-7xl mx-auto px-4 py-8">
+            <!-- Categories Filter -->
+            <div class="flex overflow-x-auto pb-4 mb-6 gap-2 hide-scrollbar">
+                <button onclick="filterCategory('Semua')" class="cat-btn px-5 py-2.5 rounded-xl text-sm font-semibold bg-kopma-600 text-white whitespace-nowrap" data-cat="Semua">Semua</button>
+                <button onclick="filterCategory('Alat Tulis')" class="cat-btn px-5 py-2.5 rounded-xl text-sm font-semibold bg-white text-slate-600 border border-slate-200 whitespace-nowrap" data-cat="Alat Tulis">Alat Tulis</button>
+                <button onclick="filterCategory('Snack & Minuman')" class="cat-btn px-5 py-2.5 rounded-xl text-sm font-semibold bg-white text-slate-600 border border-slate-200 whitespace-nowrap" data-cat="Snack & Minuman">Snack & Minuman</button>
+                <button onclick="filterCategory('Merchandise')" class="cat-btn px-5 py-2.5 rounded-xl text-sm font-semibold bg-white text-slate-600 border border-slate-200 whitespace-nowrap" data-cat="Merchandise">Semar Souvenir Center</button>
+                <button onclick="filterCategory('Kopma Rent')" class="cat-btn px-5 py-2.5 rounded-xl text-sm font-semibold bg-white text-slate-600 border border-slate-200 whitespace-nowrap" data-cat="Kopma Rent">Kopma Rent (Sewa)</button>
+                <button onclick="filterCategory('Sembako & Kebutuhan Lainnya')" class="cat-btn px-5 py-2.5 rounded-xl text-sm font-semibold bg-white text-slate-600 border border-slate-200 whitespace-nowrap" data-cat="Sembako & Kebutuhan Lainnya">Sembako & Kebutuhan</button>
+                <button onclick="filterCategory('Fotocopy & Print')" class="cat-btn px-5 py-2.5 rounded-xl text-sm font-semibold bg-white text-slate-600 border border-slate-200 whitespace-nowrap" data-cat="Fotocopy & Print">Fotocopy & Print</button>
+            </div>
+
+            <!-- Product Grid -->
+            <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6"></div>
+            
+            <div id="emptyCatalog" class="hidden text-center py-20">
+                <i class="fa-solid fa-box-open text-4xl text-slate-300 mb-3"></i>
+                <h3 class="text-lg font-bold text-slate-700">Produk tidak ditemukan</h3>
+            </div>
+        </div>
+
+        <!-- ADMIN DASHBOARD VIEW -->
+        <div id="adminView" class="hidden max-w-7xl mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                <h2 class="text-2xl font-bold text-slate-900">Dashboard Pengurus</h2>
+                <div class="flex bg-slate-100 p-1 rounded-xl">
+                    <button onclick="switchAdminTab('products')" id="tabAdminProducts" class="px-4 py-2 rounded-lg text-sm font-semibold bg-white text-kopma-600 shadow-sm">Kelola Produk</button>
+                    <button onclick="switchAdminTab('orders')" id="tabAdminOrders" class="px-4 py-2 rounded-lg text-sm font-semibold text-slate-600">Daftar Pesanan</button>
+                </div>
+            </div>
+
+            <div id="adminProductsSection" class="bg-white border border-slate-200 rounded-3xl p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg">Katalog Produk</h3>
+                    <button onclick="openProductForm()" class="bg-kopma-600 text-white px-4 py-2 rounded-xl text-sm font-semibold"><i class="fa-solid fa-plus"></i> Tambah</button>
+                </div>
+                <table class="w-full text-sm text-left"><tbody id="adminProductsTable"></tbody></table>
+            </div>
+
+            <div id="adminOrdersSection" class="hidden bg-white border border-slate-200 rounded-3xl p-6">
+                <h3 class="font-bold text-lg mb-6">Pesanan Masuk</h3>
+                <div id="adminOrdersList" class="space-y-4"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL KERANJANG, CHECKOUT, DSB TETAP ADA -->
+    <div id="cartModal" class="fixed inset-0 z-50 modal-overlay hidden-important items-center justify-end">
+        <div class="bg-white w-full max-w-md h-full flex flex-col shadow-2xl">
+            <div class="p-5 border-b flex justify-between"><h3 class="font-bold">Keranjang</h3><button onclick="toggleCartModal(false)"><i class="fa-solid fa-xmark"></i></button></div>
+            <div id="cartItemsContainer" class="flex-grow overflow-y-auto p-5 space-y-4"></div>
+            <div class="p-5 border-t">
+                <div class="flex justify-between mb-2"><span>Subtotal</span><span id="cartSubtotal">Rp 0</span></div>
+                <div class="flex justify-between font-bold text-lg mb-4"><span>Total Estimasi</span><span id="cartTotal" class="text-kopma-600">Rp 0</span></div>
+                <button id="btnProceedCheckout" onclick="openCheckout()" class="w-full bg-kopma-600 text-white font-bold py-3.5 rounded-xl">Lanjut Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CHECKOUT -->
+    <div id="checkoutModal" class="fixed inset-0 z-50 modal-overlay hidden-important items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl max-h-[90vh] flex flex-col">
+            <div class="p-5 border-b flex justify-between"><h3 class="font-bold">Form Pesanan</h3><button onclick="closeCheckout()"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="p-6 overflow-y-auto flex-grow">
+                <form id="checkoutForm" onsubmit="submitOrder(event)" class="space-y-4 text-sm">
+                    <div>
+                        <label class="block font-semibold mb-1">Metode</label>
+                        <div class="flex gap-4">
+                            <label><input type="radio" name="deliveryMethod" value="Delivery" onchange="toggleDeliveryFields()" checked> Diantar</label>
+                            <label><input type="radio" name="deliveryMethod" value="Pickup" onchange="toggleDeliveryFields()"> Ambil di Kopma</label>
+                        </div>
+                    </div>
+                    <input type="text" id="coName" required placeholder="Nama Lengkap" class="w-full px-4 py-2 border rounded-xl">
+                    <input type="tel" id="coPhone" required placeholder="No WA" class="w-full px-4 py-2 border rounded-xl">
+                    <div id="addressFields" class="flex gap-4">
+                        <select id="coArea" class="w-full px-4 py-2 border rounded-xl">
+                            <option value="FEB">FEB</option>
+                            <option value="FT">FT</option>
+                            <option value="FKIP">FKIP</option>
+                            <option value="FISIP">FISIP</option>
+                            <option value="FH">FH</option>
+                            <option value="FK">FK</option>
+                            <option value="FAPET">FAPET</option>
+                            <option value="FP">FP</option>
+                            <option value="FATISDA">FATISDA</option>
+                            <option value="FMIPA">FMIPA</option>
+                            <option value="SV">SV</option>
+                            <option value="FAPSI">FAPSI</option>
+                        </select>
+                        <input type="text" id="coRoom" placeholder="Ruangan" class="w-full px-4 py-2 border rounded-xl">
+                    </div>
+
+                    <!-- Tambahan Opsi Jam Pengantaran -->
+                    <div id="deliveryTimeContainer" class="mt-2">
+                        <label class="block font-semibold mb-1">Jam Pengantaran</label>
+                        <select id="coTime" class="w-full px-4 py-2 border rounded-xl bg-slate-50 focus:bg-white transition-colors">
+                            <option value="08:00">08:00 WIB</option>
+                            <option value="09:00">09:00 WIB</option>
+                            <option value="10:00">10:00 WIB</option>
+                            <option value="11:00">11:00 WIB</option>
+                            <option value="12:00">12:00 WIB</option>
+                            <option value="13:00">13:00 WIB</option>
+                            <option value="14:00">14:00 WIB</option>
+                            <option value="15:00">15:00 WIB</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold mb-1">Pembayaran</label>
+                        <div class="flex gap-4 mb-3">
+                            <label><input type="radio" name="paymentMethod" value="QRIS" onchange="togglePaymentMethod()" checked> QRIS</label>
+                            <label><input type="radio" name="paymentMethod" value="COD" onchange="togglePaymentMethod()"> COD</label>
+                        </div>
+                        
+                        <!-- Wadah Barcode QRIS -->
+                        <div id="qrisContainer" class="flex flex-col items-center justify-center p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                            <p class="text-xs text-slate-500 font-medium mb-2 text-center">Scan QRIS di bawah ini untuk membayar:</p>
+                            <!-- Ganti atribut src di bawah ini dengan link gambar QRIS asli Kopma -->
+                            <img src="https://i.ibb.co.com/CK1F1TYC/Kode-QRIS-SYAH-FIDELA-FILISIYANA-KAMILA-Digital-Kreatif-1-1.png" alt="Barcode QRIS" class="w-40 h-40 object-cover rounded-lg shadow-sm border border-slate-200">
+                        </div>
+                    </div>
+                    <textarea id="coNotes" rows="2" placeholder="Catatan" class="w-full px-4 py-2 border rounded-xl"></textarea>
+                </form>
+            </div>
+            <div class="p-5 border-t">
+                <button type="submit" form="checkoutForm" class="w-full bg-emerald-500 text-white font-bold py-3.5 rounded-xl">Pesan ke WA</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL RIWAYAT -->
+    <div id="historyModal" class="fixed inset-0 z-50 modal-overlay hidden-important items-center justify-center p-4">
+        <div class="bg-white w-full max-w-2xl rounded-3xl p-5"><div class="flex justify-between mb-4"><h3 class="font-bold">Riwayat Pesanan</h3><button onclick="closeHistoryModal()"><i class="fa-solid fa-xmark"></i></button></div><div id="buyerOrderHistoryList" class="space-y-4"></div></div>
+    </div>
+
+    <!-- MODAL FORM PRODUK (ADMIN) -->
+    <div id="productFormModal" class="fixed inset-0 z-50 modal-overlay hidden-important items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-3xl p-5">
+            <div class="flex justify-between mb-4"><h3 class="font-bold" id="productFormTitle">Tambah Produk</h3><button onclick="closeProductForm()"><i class="fa-solid fa-xmark"></i></button></div>
+            <form id="adminProductForm" onsubmit="saveProduct(event)" class="space-y-4 text-sm">
+                <input type="hidden" id="prodId">
+                <input type="text" id="prodName" required placeholder="Nama" class="w-full px-4 py-2 border rounded-xl">
+                <select id="prodCat" class="w-full px-4 py-2 border rounded-xl">
+                    <option value="Alat Tulis">Alat Tulis</option>
+                    <option value="Snack & Minuman">Snack & Minuman</option>
+                    <option value="Semar Souvenir Center">Semar Souvenir Center</option>
+                    <option value="Kopma Rent">Kopma Rent</option>
+                    <option value="Sembako & Kebutuhan Lainnya">Sembako & Kebutuhan</option>
+                    <option value="Fotocopy & Print">Fotocopy & Print</option>
+                </select>
+                <div class="flex gap-4"><input type="number" id="prodPrice" required placeholder="Harga" class="w-full px-4 py-2 border rounded-xl"><input type="number" id="prodStock" required placeholder="Stok" class="w-full px-4 py-2 border rounded-xl"></div>
+                <input type="url" id="prodImg" placeholder="URL Gambar" class="w-full px-4 py-2 border rounded-xl">
+                <button type="submit" class="w-full bg-kopma-600 text-white font-bold py-3 rounded-xl">Simpan</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="fixed bottom-6 right-6 z-[60] bg-slate-800 text-white px-5 py-3 rounded-xl transform translate-y-20 opacity-0 transition-all pointer-events-none flex gap-2 items-center">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i><span id="toastMsg" class="text-sm">Notifikasi</span>
+    </div>
+
+    <!-- MEMANGGIL SCRIPT JS -->
+    <script src="app.js"></script>
+</body>
+</html>
